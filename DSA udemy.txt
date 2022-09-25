@@ -1,0 +1,644 @@
+1.Array
+
+→linear Search
+
+int linear_search(int arr[], int key, int n){
+    for (int i = 0; i < n; i++){
+        if (arr[i] == key)
+         return i;        
+    }
+    return 0;
+}
+
+
+
+→Binary Search (Array must be sorted/(monotonic->increasing or decreasing order))
+
+int Binary_search(int arr[], int n, int key){
+    int s = 0;   // starting position
+    int e = n - 1;  //end position
+    
+    while (s <= e){
+        int mid = (s + e) / 2;
+        if (arr[mid] == key){
+            return mid;
+        }
+        else if (key > arr[mid]){
+            s = mid + 1;
+        }
+        else{
+            e = mid - 1;
+        }
+    }
+
+    // if key is not present
+    return -1;
+}
+
+TIME COMEPLEXITY: O(logN)
+
+
+→Printing Subarray
+
+void subarrays(int arr[], int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = i; j < n; j++)
+        {
+            for (int k = i; k <= j; k++)
+            {
+                cout << arr[k] << " ";
+            }
+            cout << endl;
+        }
+    }
+}
+
+
+
+
+-→Printing SubarraySum
+
+•Brute force 
+
+int  bruteforce_largestSubarraySum(int arr[],int n){
+    int largestSum{};
+    for(int i=0;i<n;i++){
+        for(int j = i;j<n;j++){
+            int subarraySum{};
+           for(int k = i;k<=j;k++){
+               subarraySum += arr[k];
+           }
+           largestSum = max(largestSum,subarraySum);
+    }
+        }
+        return largestSum;
+
+}
+TIME COMEPLEXITY: O(N.N.N) = O(N^3)
+
+
+
+•Prefix Sums
+
+int prefix_largestSubarraySum(int arr[], int n){
+    int prefix[n] = {0};
+    prefix[0] = arr[0];
+    for (int i = 1; i < n; i++){
+        prefix[i] = arr[i - 1] + arr[i];
+    }
+    int largest_sum{};
+    for (int i = 0; i < n; i++){
+        for (int j = i; j < n; j++){
+            int subarraySum = i > 0 ? prefix[j] - prefix[i - 1] : prefix[j];
+            largest_sum = max(subarraySum, largest_sum);
+        }
+    }
+    return largest_sum;
+}
+TIME COMEPLEXITY: O(N.N) = O(N^2)
+
+
+
+
+•kadane's Algorithm for largestSubarraySum
+
+int KadanesAlgorithm(int arr[], int n)
+{
+    int cs{}, max_sum{};
+    for (int i = 0; i < n; i++)
+    {
+        cs += arr[i];
+        if (cs < 0)
+        {
+            cs = 0;
+        }
+        max_sum = max(cs, max_sum);
+    }
+    return max_sum;
+}
+TIME COMEPLEXITY: O(N) (Workes in linear time)
+SPACE COMEPLEXITY: O(1)
+
+
+
+
+
+
+2.Basic Sorting Algorithems
+
+
+
+→Bubble Sort (Water boiling)
+
+Bubble Sort is the simplest sorting algorithm that works by repeatedly swapping
+the adjacent elements if they are in the wrong order. This algorithm is not suitable 
+for large data sets as its average and worst-case time complexity is quite high.
+(Largest element to the right at each itration)
+
+void bubble_sort(int arr[], int n){
+    for (int time = 1; time <= n - 1; time++){
+        for (int j = 0; j <= n - time - 1; j++)
+            if (arr[j] > arr[j + 1]){
+                swap(arr[j], arr[j + 1]);
+            }
+    }
+}
+
+Time Complexity: O(n^2)
+Space Complexity: O(1) 
+
+
+
+→Insertion Sort (Deck of card)
+
+Insertion sort is a simple sorting algorithm that works similar to the way you sort 
+playing cards in your hands. The array is virtually split into a sorted and an unsorted 
+part. Values from the unsorted part are picked and placed at the correct position in the sorted part.
+
+void insertion_sort(int arr[],int n){
+   for(int i = 1;i<n;i++){
+     int current = arr[i];
+     int prev = i - 1;
+     while(arr[prev] > current && prev>=0){
+        arr[prev+1] = arr[prev];
+        prev = prev - 1;
+     }
+     arr[prev + 1] = current;
+   }
+}
+
+Time Complexity: O(N^2) 
+Space Complexity: O(1)
+
+
+
+→Selection Sort
+
+The selection sort algorithm sorts an array by repeatedly finding the minimum element 
+(considering ascending order) from unsorted part and putting it at the beginning. 
+The algorithm maintains two subarrays in a given array.
+
+void selection_sort(int arr[], int n){
+    for (int pos = 0; pos <= n - 2; pos++){
+        int min_index = pos;
+
+        for (int j = pos; j <= n - 1; j++){
+            if (arr[j] < arr[min_index]){
+                min_index = j;
+            }
+        }
+        swap(arr[pos], arr[min_index]);
+    }
+}
+
+Time Complexity: O(N^2) 
+Space Complexity: O(1)
+
+
+
+
+→Inbuild sort (#include <algorithm>)
+
+• sorting an array
+  sort(arr,arr+n);
+
+• sorting in reverse order
+
+  reverse(arr,arr+n);
+  sort(arr,arr+n, greater<int>());
+
+Time Complexity: O(NlogN) 
+
+
+
+
+→Counting sort
+
+void counting_sort(int a[],int n){
+	//Largest Element
+	int largest = -1;
+
+	for(int i=0;i<n;i++){
+		largest = max(largest,a[i]);
+	}
+
+	//create a count array/vector
+	vector<int> freq(largest+1,0);
+
+	//Update the freq array 
+	for(int i=0;i<n;i++){
+		freq[a[i]]++;
+	}
+
+	//Put back the elements from freq into original array
+
+	int j = 0;
+	for(int i=0; i<=largest; i++){
+
+		while(freq[i]>0){
+			a[j] = i;
+			freq[i]--;
+			j++;
+		}
+	}
+	return;
+
+}
+
+
+
+3. 2D array
+
+
+
+→ stair Case search
+
+
+pair<int,int> stairCase_search(int arr[][4],int m,int n,int key){
+int i = 0;
+int j = m-1;
+
+if(key < arr[0][0] || key > arr[m-1][n-1]){
+    return {-1,-1};
+}
+
+while(i<=n-1 && j>=0){
+
+    if(arr[i][j] == key){
+        return {i,j};
+    }else if(arr[i][j]>key){
+        j--;
+    }else{
+        i++;
+    }
+}
+ return{-1,-1};
+}
+
+
+int main(){
+
+//2D Array Row and Column wise sorted Array
+int arr[][4]={
+    {10,20,30,40},
+    {15,25,35,45},
+    {27,29,37,48},
+    {32,33,39,50}
+};
+int n = 4,m=4;
+
+pair<int,int>ans = stairCase_search(arr,m,n,33);
+cout<<ans.first<<" "<<ans.second<<endl; // 3 1 
+    return 0;
+}
+
+
+
+
+
+4. vector (implementation)
+
+we can use ↓
+template<typename T>
+for generic programming
+
+class vector{
+    int cs;
+    int ms;
+    int *arr;
+
+public: 
+    //constructor and methode
+    vector(){
+        cs = 0;
+        ms = 1;
+        arr = new int[ms];
+    }    
+
+    //push_back and pop_back methode
+    void push_back(int k){
+        //two condition's 
+        //1. If vector is full
+        if(cs == ms){
+            int *oldarray = arr;
+            ms *= 2;
+            arr = new int[ms];
+            for(int i = 0;i<cs;i++){
+                arr[i] = oldarray[i];
+            }
+        }
+        //2.push back the new value to the array
+        arr[cs] = k;
+        cs++;
+    }
+
+    void pop_back(){
+        if(cs>0){
+            cs--;
+        }
+    }
+
+    //getter methodes at and []
+    int at(int i)const{
+        return arr[i];
+    }
+
+    int operator[](int i)const{
+        return arr[i];
+    }
+
+    //front and back methode
+    int front()const{
+        return arr[0];
+    }
+
+    int back()const{
+        return arr[cs-1];
+    }
+
+    //size and capacity of vector
+    int size()const{
+        return cs;
+    }
+
+    int capacity()const{
+        return ms;
+    }
+
+};
+
+
+
+
+Recursion (recursion take extra space due to recursive stack)
+
+1.factorial
+
+int factorial (int n){
+    //base case
+    if(n==0){
+        return 1;
+    }
+    //rec case
+    int ans = n * factorial(n-1);
+    return ans;
+}
+
+
+Time-Complexity:O(n)
+Space-Complexity:O(n)
+
+
+
+2.Fibonachi 
+
+int fib(int n){
+if(n ==0 || n ==1){
+    return n;
+}
+int f1 = fib(n-1);
+int f2 = fib(n-2);
+return f1+f2;
+}
+
+
+Time-Complexity : O(2^n)
+Space-Complexity: O(N)
+
+
+
+3.Array is sorted or not 
+
+//first way
+bool isSortedone(int arr[],int n){
+    //base case 
+    if(n==1 || n ==0){
+        return true;
+    }
+    //rec case
+    if(arr[0]<arr[1] && isSortedone(arr+1,n-1)){
+        return true;
+    }
+    return false;
+}
+
+
+
+//second way
+bool isSortedtwo(int arr[],int i , int n){
+if(i ==n-1){
+    return true;
+}
+if(arr[i]<arr[i+1] && isSortedtwo(arr,i+1,n)){
+    return true;
+}
+return false;
+}
+
+
+
+4. Print number in assending and decending order
+
+void printincreasing_Order(int n){
+    if(n==0){
+        return;
+    }
+    printincreasing_Order(n-1);
+    cout<<n<<" ";
+}
+
+void printdecreasing_Order(int n){
+    if(n==0){
+        return;
+    }
+    cout<<n<<" ";
+    printdecreasing_Order(n-1);
+    
+}
+
+
+
+5. Occurance of element in an array
+
+//first ocrence
+int firstOcc(int arr[],int n, int key){
+    //base case
+    if(n==0){
+        return -1;
+    }
+    //rec case
+    if(arr[0]==key){
+        return 0;
+    }
+    int subIndex = firstOcc(arr+1,n-1,key);
+    if(subIndex!=-1){
+        return subIndex + 1;
+    }
+    return -1;
+}
+
+
+//last occurance
+int lastOcc(int arr[],int n, int key){
+    //base case
+    if(n==0){
+        return -1;
+    }
+    //rec case
+    
+    int subIndex = lastOcc(arr+1,n-1,key);
+    if(subIndex ==-1){
+        if(arr[0]==key){
+        return 0;
+    }else{
+        return subIndex -1;
+    }
+    }else{
+        return subIndex + 1;
+    }
+}
+
+
+
+6.Power function
+
+//it take n steps to to the work ↓
+int powerof_Number(int a, int n){
+    if (n == 0){
+        return 1;
+    }
+
+    return a * powerof_Number(a, n - 1);
+}
+
+// Optimized way we can (a^n/2)^2 So we have to find only a^n/2 and 
+we can multiplay it by it self to get a^n 
+
+//it take (logn) time and space to do the work ↓
+int power_optimized(int a, int n){
+    if (n == 0){
+        return 1;
+    }
+    int subProb = power_optimized(a, n / 2);
+    int subProbSq = subProb * subProb;
+
+    // for odd
+    if (n & 1)    {
+        return a * subProbSq;
+    }
+    return subProbSq;
+}
+
+
+
+
+
+7.Number spell problem
+
+
+string spell_lastword[] ={"zero","one","two","three","four","five","six","seven","eight","nine"};
+
+void print_spell(int n){
+	if(n == 0){
+		return;
+	}
+    int lastNum = n%10;
+	print_spell(n/10);
+	cout<< spell_lastword[lastNum]<<" ";
+}
+
+
+
+
+
+
+
+Divide and Concure Methode 
+
+
+1.MereSort
+
+
+//helper method
+void merge(vector<int> &array,int s,int e){
+	int i = s;
+	int m = (s+e)/2;
+	int j = m + 1;
+
+	vector<int> temp;
+
+
+	while(i<=m and j<=e){
+		if(array[i] < array[j]){
+			temp.push_back(array[i]);
+			i++;
+		}
+		else{
+			temp.push_back(array[j]);
+			j++;
+		}
+	}
+
+	//copy rem elements from first array
+	while(i<=m){
+		temp.push_back(array[i++]);
+	}
+
+	// or copy rem elements from second array
+	while(j<=e){
+		temp.push_back(array[j++]);
+	}
+
+	//copy back the eleemtns from temp to original array
+	int k = 0 ;
+	for(int idx = s; idx <=e ;idx++){
+		array[idx] = temp[k++];
+	}
+	return;
+}
+
+//sorting method
+void mergesort(vector<int> &arr,int s,int e){
+	//base case
+	if(s>=e){
+		return;
+	}
+	//rec case
+	int mid = (s+e)/2;
+	mergesort(arr,s,mid);
+	mergesort(arr,mid+1,e);
+	return merge(arr,s,e);
+}
+
+
+Recursion
+
+1.Print All subsequence using recursion
+
+void Subsequences(int ind, vector<int> &ds, int arr[], int n){
+    if (ind == n){
+        for (auto x : ds){
+            cout << x << " ";
+        }
+        if (ds.size() == 0){
+            cout << "{}" << endl;
+        }
+        cout << endl;
+        return;
+    }
+
+    // take
+    ds.push_back(arr[ind]);
+    Subsequences(ind + 1, ds, arr, n);
+    ds.pop_back();
+
+    // not take
+    Subsequences(ind + 1, ds, arr, n);
+}
+
+
+
+
+
